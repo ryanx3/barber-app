@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const barbers = [
   {
@@ -21,14 +22,17 @@ const barbers = [
 
 export default function BarberList() {
   return (
-    <div className="min-h-screen bg-foreground flex flex-col items-center py-6 px-4">
+    <div className="min-h-screen flex flex-col items-center py-6 px-4">
       <h1 className="text-2xl font-semibold text-background mb-6">
         Escolha seu barbeiro
       </h1>
 
       <div className="grid gap-6 w-full max-w-md">
         {barbers.map((barber) => (
-          <Card key={barber.id} className="bg-secondary-foreground border border-border shadow-md rounded-lg">
+          <Card
+            key={barber.id}
+            className="border border-border shadow-md rounded-lg"
+          >
             <CardContent className="p-5 flex items-center gap-4">
               <img
                 src={barber.image}
@@ -36,11 +40,15 @@ export default function BarberList() {
                 className="w-16 h-16 rounded-full object-cover border-2 border-ring"
               />
               <div className="flex-1">
-                <h2 className="text-lg font-semibold text-background">{barber.name}</h2>
+                <h2 className="text-lg font-semibold">
+                  {barber.name}
+                </h2>
               </div>
-              <Button className="bg-background text-foreground text-sm hover:bg-primary/90">
-                Ver horários
-              </Button>
+              <Link href={`/barber/barberId`}>
+                <Button variant='ghost'>
+                  Ver horários
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         ))}
