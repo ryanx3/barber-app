@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource database {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id            Int        @id @default(autoincrement())
+  name          String     @unique
+  description   String     @default("")
+  avatar        String?
+  ownerFullName String
+  email         String     @unique
+  phone         String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  barbers       Barber[]
+  customers     Customer[]
+  services      Services[]
+}
+
+model Barber {
+  id        Int         @id @default(autoincrement())
+  name      String
+  email     String      @unique
+  number    String
+  avatar    String?
+  companyId Int?
+  company   Company?    @relation(fields: [companyId], references: [id])
+  services  Services[]
+  schedules Scheduler[]
+  workHours WorkHours[]
+}
+
+model Customer {
+  id        Int         @id @default(autoincrement())
+  name      String
+  email     String      @unique
+  password  String
+  phone     String
+  avatar    String?
+  companyId Int?
+  company   Company?    @relation(fields: [companyId], references: [id])
+  schedules Scheduler[]
+}
+
+model Services {
+  id        Int         @id @default(autoincrement())
+  name      String
+  price     Int
+  barberId  Int?
+  barber    Barber?     @relation(fields: [barberId], references: [id])
+  schedules Scheduler[]
+  Company   Company?    @relation(fields: [companyId], references: [id])
+  companyId Int?
+}
+
+model Scheduler {
+  id         Int       @id @default(autoincrement())
+  barberId   Int
+  barber     Barber    @relation(fields: [barberId], references: [id])
+  customerId Int?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  serviceId  Int
+  service    Services  @relation(fields: [serviceId], references: [id])
+  day        DateTime
+}
+
+model WorkHours {
+  id        Int      @id @default(autoincrement())
+  barberId  Int
+  barber    Barber   @relation(fields: [barberId], references: [id])
+  dayOfWeek Int // 0 = Domingo, 1 = Segunda...
+  startTime DateTime
+  endTime   DateTime
+}
